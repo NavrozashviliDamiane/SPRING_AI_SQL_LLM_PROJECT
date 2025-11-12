@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
@@ -19,16 +20,19 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         
         // Allow all origins
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         
         // Allow all HTTP methods
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
         
         // Allow all headers
         configuration.setAllowedHeaders(Arrays.asList("*"));
         
+        // Expose headers
+        configuration.setExposedHeaders(Arrays.asList("*"));
+        
         // Allow credentials
-        configuration.setAllowCredentials(false);
+        configuration.setAllowCredentials(true);
         
         // Max age for preflight requests (1 hour)
         configuration.setMaxAge(3600L);
@@ -37,5 +41,10 @@ public class CorsConfig {
         source.registerCorsConfiguration("/**", configuration);
         
         return source;
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter(corsConfigurationSource());
     }
 }
